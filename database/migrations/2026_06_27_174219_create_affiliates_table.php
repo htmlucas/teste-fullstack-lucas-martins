@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('affiliates', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('external_id')->unique();
             $table->string('username')->unique();
             $table->string('email')->unique();
             $table->string('password')->nullable();
