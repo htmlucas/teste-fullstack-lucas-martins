@@ -1,0 +1,28 @@
+<?php
+
+namespace App\Models;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+
+use Illuminate\Database\Eloquent\Model;
+
+#[Fillable(['external_id','affiliate_id', 'status', 'total', 'ordered_at'])]
+class Order extends Model
+{
+    protected $table = 'orders';
+    public $incrementing = true;
+
+    public function affiliate()
+    {
+        return $this->belongsTo(Affiliate::class);
+    }
+
+    public function items()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
+    public function statusLogs()
+    {
+        return $this->hasMany(OrderStatusLog::class);
+    }
+}
