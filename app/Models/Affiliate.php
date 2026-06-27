@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 
 use Illuminate\Database\Eloquent\Model;
 
-#[Fillable(['username', 'email', 'password'])]
+#[Fillable(['external_id','username', 'email', 'password'])]
 class Affiliate extends Model
 {
     protected $table = 'affiliates';
