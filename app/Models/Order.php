@@ -11,6 +11,10 @@ class Order extends Model
     protected $table = 'orders';
     public $incrementing = true;
 
+    protected $casts = [
+        'ordered_at' => 'datetime',
+    ];
+
     public function affiliate()
     {
         return $this->belongsTo(Affiliate::class);

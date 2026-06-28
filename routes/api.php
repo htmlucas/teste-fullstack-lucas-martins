@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\AffiliatesController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cache;
@@ -46,3 +48,9 @@ Route::get('/health', function () {
         'checked_at' => now()->toISOString(),
     ], $healthy ? 200 : 503);
 });
+
+Route::get('/orders/metrics', [OrderController::class, 'metrics']);
+Route::get('/orders', [OrderController::class, 'index']);
+Route::get('/orders/{id}', [OrderController::class, 'find']);
+Route::post('/orders/{id}/status', [OrderController::class, 'status']);
+Route::get('/affiliates/{id}/summary',[AffiliatesController::class, 'summary']);
