@@ -1,60 +1,103 @@
-<script setup lang="ts">
-import { Head } from '@inertiajs/vue3';
-import PendingInvitationsModal from '@/components/PendingInvitationsModal.vue';
-import PlaceholderPattern from '@/components/PlaceholderPattern.vue';
-import { dashboard } from '@/routes';
-import type { DashboardInvitation, Team } from '@/types';
+<script setup>
+import MetricsCards from '@/components/Dashboard/MetricsCards.vue'
+import OrdersFilters from '@/components/Dashboard/OrdersFilters.vue'
+import OrdersTable from '@/components/Dashboard/OrdersTable.vue'
+import OrdersMobileList from '@/components/Dashboard/OrdersMobileList.vue'
+import OrderDrawer from '@/components/Dashboard/OrderDrawer.vue'
 
-defineProps<{
-    pendingInvitations?: DashboardInvitation[];
-}>();
+import { useMetrics } from '@/composables/useMetrics'
+import { useOrders } from '@/composables/useOrders'
 
-defineOptions({
-    layout: (props: { currentTeam?: Team | null }) => ({
-        breadcrumbs: [
-            {
-                title: 'Dashboard',
-                href: props.currentTeam
-                    ? dashboard(props.currentTeam.slug)
-                    : '/',
-            },
-        ],
-    }),
-});
+const metrics = useMetrics()
+const orders = useOrders()
 </script>
 
 <template>
-    <Head title="Dashboard" />
-
-    <PendingInvitationsModal
-        v-if="pendingInvitations && pendingInvitations.length > 0"
-        :invitations="pendingInvitations"
-    />
-
-    <div
-        class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
-    >
-        <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div
-                class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"
-            >
-                <PlaceholderPattern />
-            </div>
-            <div
-                class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"
-            >
-                <PlaceholderPattern />
-            </div>
-            <div
-                class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"
-            >
-                <PlaceholderPattern />
-            </div>
+  <main class="min-h-screen bg-slate-50 p-4 sm:p-6 lg:p-8">
+    <div class="mx-auto max-w-7xl space-y-6">
+      <header class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 class="text-2xl font-bold text-slate-900">
+            Gestão de Pedidos
+          </h1>
+          <p class="text-sm text-slate-500">
+            Dashboard de pedidos, afiliados e status da operação.
+          </p>
         </div>
+
+        <span class="text-xs text-slate-500">
+          {{ metrics.updatedAgo() }}
+        </span>
+      </header>
+
+      <MetricsCards
+        :metrics="metrics.metrics.value"
+        :loading="metrics.loading.value"
+        :error="metrics.error.value"
+        :updated-ago="metrics.updatedAgo()"
+        @refresh="metrics.fetchMetrics"
+      />
+
+      <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+        <div class="mb-4 flex items-center justify-between gap-4">
+          <div>
+            <h2 class="text-lg font-semibold text-slate-900">
+              Pedidos
+            </h2>
+            <p class="text-sm text-slate-500">
+              Filtre, ordene e acompanhe os pedidos importados.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-slate-900"
+            aria-label="Atualizar lista de pedidos"
+            @click="orders.fetchOrders"
+          >
+            Atualizar
+          </button>
+        </div>
+
+        <OrdersFilters :filters="orders.filters" />
+
         <div
-            class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border"
+          v-if="orders.error.value"
+          class="mt-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700"
         >
-            <PlaceholderPattern />
+          {{ orders.error.value[0] }}
         </div>
+
+        <div class="mt-4 hidden md:block">
+          <OrdersTable
+            :orders="orders.orders.value"
+            :meta="orders.meta.value"
+            :loading="orders.loading.value"
+            :filters="orders.filters"
+            :selected-ids="orders.selectedIds.value"
+            @sort="orders.sortBy"
+            @change-page="orders.changePage"
+            @toggle-selection="orders.toggleSelection"
+            @open-order="orders.openOrder"
+          />
+        </div>
+
+        <div class="mt-4 md:hidden">
+          <OrdersMobileList
+            :orders="orders.orders.value"
+            :loading="orders.loading.value"
+            @open-order="orders.openOrder"
+          />
+        </div>
+      </section>
+
+      <OrderDrawer
+        :open="orders.drawerOpen.value"
+        :order="orders.selectedOrderDetails.value"
+        :affiliate-summary="orders.affiliateSummary.value"
+        @close="orders.closeDrawer"
+        :on-update-status="orders.updateStatus"
+      />
     </div>
+  </main>
 </template>
