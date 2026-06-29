@@ -32,7 +32,7 @@ class FakeStoreClient
             throw new FakeStoreApiException(
                 message: "FakeStore request failed: {$endpoint}",
                 code: $response->status(),
-                response: $response->json()
+                response: $response->json() ?? []
             );
         }
 
@@ -44,12 +44,12 @@ class FakeStoreClient
         return $this->get('/users');
     }
 
-    public function getProducts()
+    public function getProducts(): array
     {
         return $this->get('/products');
     }
 
-    public function getCarts()
+    public function getCarts(): array
     {
         return $this->get('/carts');
     }

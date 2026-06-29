@@ -54,9 +54,9 @@ class ListOrdersRequest extends FormRequest
         ];
     }
 
-    public function withValidator($validator)
+    public function withValidator($validator): void
     {
-        $validator->after(function ($validator) {
+        $validator->after(function ($validator): void{
             $min = $this->input('min_value');
             $max = $this->input('max_value');
 

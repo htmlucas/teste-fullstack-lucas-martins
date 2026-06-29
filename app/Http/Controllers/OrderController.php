@@ -40,7 +40,7 @@ class OrderController extends Controller
         return $this->success(new OrderResource($order));
     }
 
-    public function metrics()
+    public function metrics(): JsonResponse
     {
         return $this->success($this->orderService->getMetrics());
     }

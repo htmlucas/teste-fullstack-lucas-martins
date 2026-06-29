@@ -16,6 +16,7 @@ class QueueWorkerHeartbeatCommand extends Command
     {
         $this->info('Queue worker heartbeat started.');
 
+        // @phpstan-ignore-next-line
         while (true) {
             Cache::put(
                 'queue_worker:last_seen',
@@ -25,7 +26,5 @@ class QueueWorkerHeartbeatCommand extends Command
 
             sleep(10);
         }
-
-        return self::SUCCESS;
     }
 }
