@@ -19,6 +19,7 @@ async function request(url, options = {}) {
     const error = new Error('API request failed')
     error.status = response.status
     error.payload = payload
+
     throw error
   }
 

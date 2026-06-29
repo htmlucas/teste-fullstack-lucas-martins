@@ -27,6 +27,10 @@ export function useOrders() {
     page: 1,
   })
 
+  function updateFilter(key, value) {
+    filters[key] = value
+  }
+
   const affiliateSummary = ref(null)
 
   let debounceTimer = null
@@ -40,6 +44,7 @@ export function useOrders() {
 
         if (key === 'affiliate_id' && Number(value) <= 0) {
           filters[key] = ''
+
           return
         }
 
@@ -117,6 +122,7 @@ export function useOrders() {
   function toggleSelection(id) {
     if (selectedIds.value.includes(id)) {
       selectedIds.value = selectedIds.value.filter((item) => item !== id)
+
       return
     }
 
@@ -183,7 +189,7 @@ export function useOrders() {
       for (const id of ids) {
         try {
           await api.updateOrderStatus(id, 'cancelled')
-        } catch (err) {
+        } catch {
           failedIds.push(id)
         }
       }
@@ -196,6 +202,7 @@ export function useOrders() {
         ]
 
         selectedIds.value = failedIds
+
         return
       }
 
@@ -245,6 +252,7 @@ export function useOrders() {
     closeDrawer,
     updateStatus,
     cancelSelectedOrders,
+    updateFilter,
     
   }
 }

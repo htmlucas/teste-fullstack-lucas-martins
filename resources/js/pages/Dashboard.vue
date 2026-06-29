@@ -1,9 +1,9 @@
 <script setup>
 import MetricsCards from '@/components/Dashboard/MetricsCards.vue'
-import OrdersFilters from '@/components/Dashboard/OrdersFilters.vue'
-import OrdersTable from '@/components/Dashboard/OrdersTable.vue'
-import OrdersMobileList from '@/components/Dashboard/OrdersMobileList.vue'
 import OrderDrawer from '@/components/Dashboard/OrderDrawer.vue'
+import OrdersFilters from '@/components/Dashboard/OrdersFilters.vue'
+import OrdersMobileList from '@/components/Dashboard/OrdersMobileList.vue'
+import OrdersTable from '@/components/Dashboard/OrdersTable.vue'
 
 import { useMetrics } from '@/composables/useMetrics'
 import { useOrders } from '@/composables/useOrders'
@@ -89,7 +89,7 @@ const orders = useOrders()
           </div>
         </div>
 
-        <OrdersFilters :filters="orders.filters" />
+        <OrdersFilters :filters="orders.filters"  @update-filter="orders.updateFilter"/>
 
         <div
           v-if="orders.error.value"

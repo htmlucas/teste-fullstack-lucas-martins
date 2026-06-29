@@ -25,7 +25,9 @@ export function useMetrics() {
   }
 
   function updatedAgo() {
-    if (!lastUpdatedAt.value) return 'não atualizado'
+    if (!lastUpdatedAt.value) {
+return 'não atualizado'
+}
 
     const diffInSeconds = Math.floor((new Date() - lastUpdatedAt.value) / 1000)
 

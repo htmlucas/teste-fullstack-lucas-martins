@@ -1,7 +1,7 @@
 <script setup>
 import SkeletonCard from './SkeletonCard.vue'
 
-const props = defineProps({
+defineProps({
   metrics: {
     type: Object,
     default: null,

@@ -21,7 +21,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['close'])
+defineEmits(['close'])
 
 const selectedStatus = ref('')
 const loading = ref(false)
@@ -35,7 +35,9 @@ const transitions = {
 }
 
 const availableStatuses = computed(() => {
-  if (!props.order?.status) return []
+  if (!props.order?.status) {
+return []
+}
 
   return transitions[props.order.status] ?? []
 })
@@ -56,7 +58,9 @@ function money(value) {
 }
 
 function formatDate(value) {
-  if (!value) return '-'
+  if (!value) {
+return '-'
+}
 
   return new Intl.DateTimeFormat('pt-BR', {
     dateStyle: 'short',
@@ -65,7 +69,9 @@ function formatDate(value) {
 }
 
 async function submitStatus() {
-  if (!selectedStatus.value || !props.order?.id) return
+  if (!selectedStatus.value || !props.order?.id) {
+return
+}
 
   loading.value = true
   error.value = null
