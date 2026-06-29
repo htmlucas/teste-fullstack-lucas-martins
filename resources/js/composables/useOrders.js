@@ -12,6 +12,9 @@ export function useOrders() {
   const drawerOpen = ref(false)
   const selectedIds = ref([])
 
+  const bulkLoading = ref(false)
+  const bulkError = ref(null)
+
   const filters = reactive({
     affiliate_id: '',
     status: '',
@@ -165,6 +168,43 @@ export function useOrders() {
     return response
   }
 
+  async function cancelSelectedOrders() {
+    if (selectedIds.value.length === 0) {
+      return
+    }
+
+    bulkLoading.value = true
+    bulkError.value = null
+
+    const ids = [...selectedIds.value]
+    const failedIds = []
+
+    try {
+      for (const id of ids) {
+        try {
+          await api.updateOrderStatus(id, 'cancelled')
+        } catch (err) {
+          failedIds.push(id)
+        }
+      }
+
+      await fetchOrders()
+
+      if (failedIds.length > 0) {
+        bulkError.value = [
+          `Não foi possível cancelar os pedidos: ${failedIds.join(', ')}. Verifique se eles possuem transição válida para cancelled.`,
+        ]
+
+        selectedIds.value = failedIds
+        return
+      }
+
+      selectedIds.value = []
+    } finally {
+      bulkLoading.value = false
+    }
+  }
+
   watch(
     () => ({
       affiliate_id: filters.affiliate_id,
@@ -194,6 +234,8 @@ export function useOrders() {
     selectedOrderDetails,
     affiliateSummary,
     drawerOpen,
+    bulkLoading,
+    bulkError,
     fetchOrders,
     changePage,
     sortBy,
@@ -202,6 +244,7 @@ export function useOrders() {
     openOrder,
     closeDrawer,
     updateStatus,
+    cancelSelectedOrders,
     
   }
 }

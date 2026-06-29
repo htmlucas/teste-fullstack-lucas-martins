@@ -47,21 +47,23 @@ services:
 
     # worker
     worker:
-        build:
-          context: .
-          dockerfile: Dockerfile
-        container_name: laravel_worker
-        restart: unless-stopped
-        command: "php artisan queue:work  redis --queue=default --tries=3 --sleep=3 --timeout=90"
-        working_dir: /var/www/
-        volumes:
-          - ./:/var/www
-        depends_on:
-          - app
-          - mysql
-          - redis
-        networks:
-          - laravel-12
+      build:
+        context: .
+        dockerfile: Dockerfile
+      container_name: laravel_worker
+      restart: unless-stopped
+      command: >
+        sh -c "php artisan queue:heartbeat &
+              php artisan queue:work redis --queue=default --tries=3 --sleep=3 --timeout=90"
+      working_dir: /var/www/
+      volumes:
+        - ./:/var/www
+      depends_on:
+        - app
+        - mysql
+        - redis
+      networks:
+        - laravel-12
 
     # redis
     redis:

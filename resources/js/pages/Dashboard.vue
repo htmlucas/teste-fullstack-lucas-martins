@@ -39,7 +39,7 @@ const orders = useOrders()
       />
 
       <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-        <div class="mb-4 flex items-center justify-between gap-4">
+        <div class="mb-4 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h2 class="text-lg font-semibold text-slate-900">
               Pedidos
@@ -49,14 +49,44 @@ const orders = useOrders()
             </p>
           </div>
 
-          <button
-            type="button"
-            class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-slate-900"
-            aria-label="Atualizar lista de pedidos"
-            @click="orders.fetchOrders"
-          >
-            Atualizar
-          </button>
+          <div class="flex flex-wrap items-center justify-start gap-2 sm:justify-end">
+            <span
+              v-if="orders.selectedIds.value.length > 0"
+              class="rounded-lg bg-slate-100 px-3 py-2 text-sm text-slate-700"
+            >
+              {{ orders.selectedIds.value.length }} selecionado(s)
+            </span>
+
+            <button
+              v-if="orders.selectedIds.value.length > 0"
+              type="button"
+              class="rounded-lg border border-red-300 px-3 py-2 text-sm font-medium text-red-700 hover:bg-red-50 disabled:opacity-50 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-red-700"
+              aria-label="Cancelar pedidos selecionados"
+              :disabled="orders.bulkLoading.value"
+              @click="orders.cancelSelectedOrders"
+            >
+              {{ orders.bulkLoading.value ? 'Cancelando...' : 'Cancelar selecionados' }}
+            </button>
+
+            <button
+              v-if="orders.selectedIds.value.length > 0"
+              type="button"
+              class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-slate-900"
+              aria-label="Limpar seleção de pedidos"
+              @click="orders.clearSelection"
+            >
+              Limpar seleção
+            </button>
+
+            <button
+              type="button"
+              class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-slate-900"
+              aria-label="Atualizar lista de pedidos"
+              @click="orders.fetchOrders"
+            >
+              Atualizar
+            </button>
+          </div>
         </div>
 
         <OrdersFilters :filters="orders.filters" />
@@ -66,6 +96,13 @@ const orders = useOrders()
           class="mt-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700"
         >
           {{ orders.error.value[0] }}
+        </div>
+
+        <div
+          v-if="orders.bulkError.value"
+          class="mt-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700"
+        >
+          {{ orders.bulkError.value[0] }}
         </div>
 
         <div class="mt-4 hidden md:block">

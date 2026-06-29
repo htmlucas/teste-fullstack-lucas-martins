@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
+use Carbon\Carbon;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -36,7 +37,12 @@ Route::get('/health', function () {
     $workerLastSeen = Cache::get('queue_worker:last_seen');
 
     if ($workerLastSeen) {
-        $services['worker'] = now()->diffInSeconds($workerLastSeen) <= 30;
+        try {
+            $services['worker'] = Carbon::parse($workerLastSeen)
+                ->diffInSeconds(now()) <= 30;
+        } catch (Throwable) {
+            $services['worker'] = false;
+        }
     }
 
     $healthy = collect($services)->every(fn ($status) => $status === true);

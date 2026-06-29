@@ -55,16 +55,21 @@ class OrderImportService
                 continue;
             }
 
-            OrderItem::updateOrCreate(
-                [
-                    'order_id' => $order->id,
-                    'product_id' => $product->id,
-                ],
-                [
-                    'quantity' => $item['quantity'],
-                    'unit_price' => $product->price,
-                ]
-            );
+            $order = Order::firstOrNew([
+                'external_id' => $cart['id'],
+            ]);
+
+            if (! $order->exists) {
+                $order->status = 'pending';
+            }
+
+            $order->affiliate_id = $affiliate->id;
+            $order->total = $total;
+            $order->ordered_at = ! empty($cart['date'])
+                ? Carbon::parse($cart['date'])->toDateTimeString()
+                : null;
+
+            $order->save();
         }
     }
 }
