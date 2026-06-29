@@ -13,6 +13,10 @@ return [
     | a conventional file to locate the various service credentials.
     |
     */
+    'fakestore' => [
+        'base_url'=> env('FAKE_STORE_URL', 'https://fakestoreapi.com'),
+        'timeout' => env('FAKESTORE_TIMEOUT', 8),
+    ],
 
     'postmark' => [
         'key' => env('POSTMARK_API_KEY'),
