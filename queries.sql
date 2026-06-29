@@ -1,4 +1,15 @@
-/* Query A */
+/* 
+Query A — Ranking de afiliados por receita
+
+Objetivo:
+Listar os 10 afiliados com maior receita líquida considerando apenas pedidos
+approved e refunded.
+
+Estratégia:
+1. Agrupar os pedidos por afiliado em uma CTE.
+2. Calcular receita bruta, valor reembolsado e receita líquida.
+3. Usar RANK() OVER para adicionar a posição do afiliado no ranking.
+*/
 
 WITH affiliate_summary AS (
     SELECT 
@@ -21,7 +32,7 @@ WITH affiliate_summary AS (
         ) AS net_revenue
     FROM orders o
     JOIN affiliates a
-        ON a.external_id = o.affiliate_id
+        ON a.id = o.affiliate_id
     WHERE o.status IN ('approved', 'refunded')
     GROUP BY a.id, a.username
 )
