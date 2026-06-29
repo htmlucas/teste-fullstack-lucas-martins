@@ -36,8 +36,8 @@ const transitions = {
 
 const availableStatuses = computed(() => {
   if (!props.order?.status) {
-return []
-}
+    return []
+  }
 
   return transitions[props.order.status] ?? []
 })
@@ -59,8 +59,8 @@ function money(value) {
 
 function formatDate(value) {
   if (!value) {
-return '-'
-}
+    return '-'
+  }
 
   return new Intl.DateTimeFormat('pt-BR', {
     dateStyle: 'short',
@@ -70,8 +70,8 @@ return '-'
 
 async function submitStatus() {
   if (!selectedStatus.value || !props.order?.id) {
-return
-}
+    return
+  }
 
   loading.value = true
   error.value = null
@@ -117,11 +117,12 @@ return
 
         <button
           type="button"
-          class="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-slate-900"
+          class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-slate-300 bg-white text-slate-700 shadow-sm transition hover:bg-slate-50 hover:text-slate-900 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-slate-900"
           aria-label="Fechar painel de detalhes"
+          title="Fechar"
           @click="$emit('close')"
         >
-          Fechar
+          <span aria-hidden="true" class="text-2xl leading-none">×</span>
         </button>
       </div>
 
